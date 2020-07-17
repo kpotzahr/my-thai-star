@@ -1,14 +1,13 @@
 package com.devonfw.mts.pages;
 
-import java.util.List;
-
+import com.capgemini.mrchecker.selenium.core.BasePage;
+import com.capgemini.mrchecker.selenium.core.exceptions.BFElementNotFoundException;
+import com.devonfw.mts.common.readProperties.ConfigFileReader;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
-import com.capgemini.mrchecker.selenium.core.BasePage;
-import com.capgemini.mrchecker.selenium.core.exceptions.BFElementNotFoundException;
-import com.devonfw.mts.common.readProperties.ConfigFileReader;
+import java.util.List;
 
 public class ThaiHomePage extends BasePage {
 
@@ -31,7 +30,7 @@ public class ThaiHomePage extends BasePage {
   private static final By menuTabSearch = By.xpath("//a[@routerlink='/menu']");
 
   /** Book a table button search criteria */
-  private static final By bookTableButtonSearch = By.name("buttons.bookTableNavigate");
+  private static final By bookTableButtonSearch = By.xpath("//a[@routerlink='/bookTable']");
 
   /**
    * {@inheritDoc}

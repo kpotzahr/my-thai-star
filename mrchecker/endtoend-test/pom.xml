@@ -103,7 +103,7 @@
         <aspectj.version>1.8.10</aspectj.version>
 
         <!-- Cucumber version -->
-        <cucumber.version>1.2.5</cucumber.version>
+        <cucumber.version>6.2.2</cucumber.version>
         <cucumber.jvm.parallel.version>4.1.0</cucumber.jvm.parallel.version>
         <cucumber-reporting.version>3.7.0</cucumber-reporting.version>
 
@@ -234,7 +234,36 @@
             <version>${junit-toolbox.version}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.2.7.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.2.7.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
         <!--This dependency is necessary for Allure generator plugin. -->
         <dependency>
             <!-- Test listener. Binds Junit exec to Allure annotation -->

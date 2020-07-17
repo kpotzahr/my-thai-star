@@ -1,6 +1,16 @@
 package com.devonfw.mts.common.data;
 
 public class User {
+  private static final String DEFAULT_USERNAME = "waiter";
+  private static final String DEFAULT_PASSWORD = "waiter";
+
+  public static User defaultUser() {
+    return new User(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+  }
+
+  public static User waiterUser() {
+    return new User(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+  }
 
   /** Username */
   private String username;

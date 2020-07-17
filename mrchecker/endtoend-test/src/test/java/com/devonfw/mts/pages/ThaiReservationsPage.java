@@ -1,33 +1,39 @@
 package com.devonfw.mts.pages;
 
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-
 import com.capgemini.mrchecker.selenium.core.BasePage;
+import com.capgemini.mrchecker.selenium.core.newDrivers.elementType.Button;
 import com.capgemini.mrchecker.test.core.logger.BFLogger;
 import com.devonfw.mts.common.data.Reservation;
 import com.devonfw.mts.common.utils.Utils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ThaiReservationsPage extends BasePage {
 
   /** Reservations table search criteria */
-  private static final By reservationsTableSearch = By.xpath("//tbody[@class='td-data-table-body']/tr");
+  private static final By reservationsTableSearch = By.xpath("//tbody/tr");
 
   /** Search bar search criteria*/
-  private static final By searchBarFilter = By.className("td-expansion-panel-header-content");
+  private static final By searchBarFilter = By.cssSelector("#mat-expansion-panel-header-1");
 
   /** Email input search criteria*/
   private static final By emailInputSearch = By.xpath("//input[@name=\"email\"]");
 
   /** submit data button search criteria */
   private static final By submitButtonSearch = By.xpath("//button[@type='submit']");
+
+  private static final By COLUMN_BOOKING_DATE_SEARCH = By.className("cdk-column-bookingDate");
+  private static final By COLUMN_EMAIL_SEARCH = By.className("cdk-column-email");
+  private static final By COLUMN_BOOKING_TOKEN_SEARCH = By.className("cdk-column-bookingToken");
+  private static final String DATE_FORMAT_UI = "MMM dd, yyyy hh:mm a";
+  private static final String DATE_FORMAT_INTERNAL = "MM/dd/yyyy hh:mm a";
 
   /** Map to store email/reservation id data */
   private Map<String, List<String>> tableData;
@@ -148,6 +154,54 @@ public class ThaiReservationsPage extends BasePage {
    * */
   public By findDataCell(int indexRow, int indexCol) {
     return By.xpath("//tbody[@class='td-data-table-body']/tr[" + indexRow + "]/td[" + indexCol + "]//span");
+  }
+
+  /**
+   * Method to get the reservations for a given email
+   *
+   * @return List<String> a list of booking ids for that email
+   */
+  public List<Reservation> getReservationsForEmail(String email)  {
+    Button searchBar = getDriver().elementButton(searchBarFilter);
+    getWebDriverWait().until(ExpectedConditions.elementToBeClickable(searchBar.getElement()));
+    searchBar.click();
+    Utils.sendKeysWithCheck(email, emailInputSearch, getDriver(), getWebDriverWait(), 1);
+    getDriver().findElementDynamic(submitButtonSearch).click();
+
+    return getReservations().stream().filter(r -> r.getEmail().equals(email)).collect(Collectors.toList());
+  }
+
+  private List<Reservation> getReservations() {
+    try {
+      return getReservationsInternal();
+    } catch (StaleElementReferenceException exc) {
+      return getReservationsInternal();
+    }
+  }
+
+
+  private List<Reservation> getReservationsInternal() {
+    List<Reservation> reservations = new ArrayList<>();
+
+    List<WebElement> reservationsLines = getDriver().findElementDynamics(reservationsTableSearch);
+
+    for (WebElement reservationLine : reservationsLines) {
+      String date = reformatReservationDate(reservationLine.findElement(COLUMN_BOOKING_DATE_SEARCH).getText());
+      String email = reservationLine.findElement(COLUMN_EMAIL_SEARCH).getText();
+      String id = reservationLine.findElement(COLUMN_BOOKING_TOKEN_SEARCH).getText();
+      reservations.add(new Reservation(date, email, id));
+
+    }
+    return reservations;
+  }
+
+  private String reformatReservationDate(String dateFromTable) {
+    try {
+      return Utils.changeDateFormat(dateFromTable, DATE_FORMAT_UI, DATE_FORMAT_INTERNAL);
+    } catch (ParseException exc) {
+      throw new IllegalArgumentException(
+              "Date" + dateFromTable + " not formated properly at getReservationsShownByDate in ThaiReservationsPage", exc);
+    }
   }
 
 }
