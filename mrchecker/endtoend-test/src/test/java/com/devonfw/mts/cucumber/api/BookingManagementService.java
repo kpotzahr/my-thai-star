@@ -1,12 +1,10 @@
 package com.devonfw.mts.cucumber.api;
 
 import com.devonfw.mts.common.data.Booking;
+import com.devonfw.mts.common.data.BookingSearchCriteria;
 import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class BookingManagementService {
@@ -17,31 +15,19 @@ public class BookingManagementService {
 
     public boolean hasBookingForEmail(String email) {
         Response searchResponse = requestBuilder.request()
-                .body(new SearchCriteria().withEmail(email)).post(BOOKING_BASE_PATH + "/booking/search");
+                .body(BookingSearchCriteria.create().withEmail(email)).post(BOOKING_BASE_PATH + "/booking/search");
         return searchResponse.getBody().print().contains(email);
     }
 
     public void createBookingForEmail(String email) {
         Booking booking = Booking.defaultValidBooking();
         booking.getBooking().setEmail(email);
+        sendValidBookingRequest(booking);
+    }
+
+    private void sendValidBookingRequest(Booking booking) {
         requestBuilder.request()
-                .body(booking).post(BOOKING_BASE_PATH+ "/booking/")
+                .body(booking).post(BOOKING_BASE_PATH + "/booking/")
                 .then().assertThat().statusCode(200);
-    }
-
-    private class Pageable {
-        public int pageSize = 8;
-        public int pageNumber = 0;
-        public List<String> sort = new ArrayList<>();
-    }
-
-    private class SearchCriteria {
-        public Pageable pageable = new Pageable();
-        public String email;
-
-        public SearchCriteria withEmail(String email) {
-            this.email = email;
-            return this;
-        }
     }
 }
