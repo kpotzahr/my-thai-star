@@ -24,31 +24,23 @@
         <mrchecker-webapi-module.version>1.1.5</mrchecker-webapi-module.version>
 
         <!-- Java settings -->
-        <java.compiler.version>1.8</java.compiler.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
 
-
-        <!-- Allure reporting -->
-        <allure-junit4-listener.version>2.6.0</allure-junit4-listener.version> <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-junit4 -->
-        <allure-maven-report-generator.version>2.9</allure-maven-report-generator.version>  <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-maven -->
-        <allure-cli-runner.version>2.6.0</allure-cli-runner.version> <!-- Url to download Allure report CLI https://bintray.com/qameta/generic/allure2 -->
-
-        <allure.report.directory>${basedir}/target/</allure.report.directory>
-        <report-directory>${basedir}/test-output/</report-directory>
-        <aspectj.version>1.8.10</aspectj.version>
 
         <!-- Cucumber version -->
-        <cucumber.version>6.2.2</cucumber.version>
+        <cucumber.version>6.8.1</cucumber.version>
+        <rest-assured.version>4.3.2</rest-assured.version>
 
         <!-- Test tools -->
-        <junit.version>4.12</junit.version>
-        <mockito.version>1.8.5</mockito.version>
+        <junit.version>5.7.0</junit.version>
+        <mockito.version>2.10.0</mockito.version>
         <joda-time.version>2.9.9</joda-time.version>
+        <assertj.version>3.18.1</assertj.version>
         <jsoup.version>1.11.2</jsoup.version>
         <commons-csv.version>1.1</commons-csv.version>
-        <JUnitParams.version>1.0.4</JUnitParams.version>
 
-        <!-- Dependency Injection -->
-        <guice.version>4.1.0</guice.version>
+        <spring.version>5.2.7.RELEASE</spring.version>
 
         <!-- Static analyze settings -->
         <formatter-maven-plugin.version>2.7.1</formatter-maven-plugin.version>
@@ -88,30 +80,40 @@
             <version>${mrchecker-webapi-module.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
-
         <!--This dependency is necessary for JUnit plugin. -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
         </dependency>
         <dependency>
-            <groupId>pl.pragmatists</groupId>
-            <artifactId>JUnitParams</artifactId>
-            <version>${JUnitParams.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -144,28 +146,33 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.2.7.RELEASE</version>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>5.2.7.RELEASE</version>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--This dependency is necessary for Allure generator plugin. -->
         <dependency>
-            <!-- Test listener. Binds Junit exec to Allure annotation -->
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-junit4</artifactId>
-            <version>${allure-junit4-listener.version}</version>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- Allure report generator -->
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-maven</artifactId>
-            <version>${allure-maven-report-generator.version}</version>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>spring-mock-mvc</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
