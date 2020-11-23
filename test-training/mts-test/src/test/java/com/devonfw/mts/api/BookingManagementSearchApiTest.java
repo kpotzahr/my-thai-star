@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.hasSize;
 public class BookingManagementSearchApiTest {
     private static final String BOOKING_BASE_PATH = "/api/services/rest/bookingmanagement/v1";
     private static final String BOOKING_SEARCH_PATH = BOOKING_BASE_PATH + "/booking/search";
+    private static final String KNOWN_UNIQUE_EMAIL = "user0@mail.com";
 
     @Test
     public void searchByUnknownEmail(RequestSpecification given) {
@@ -24,13 +25,12 @@ public class BookingManagementSearchApiTest {
 
     @Test
     public void searchByKnownEmail(RequestSpecification given) {
-        given.body(new SearchCriteria().withEmail("user0@mail.com")).
+        given.body(new SearchCriteria().withEmail(KNOWN_UNIQUE_EMAIL)).
                 when().post(BOOKING_SEARCH_PATH).
                 then().statusCode(200).
                 body("content", hasSize(1)).
-                body("content[0].booking.email", equalTo("user0@mail.com")).
+                body("content[0].booking.email", equalTo(KNOWN_UNIQUE_EMAIL)).
                 body("content[0].booking.name", equalTo("user0"));
-        ;
     }
 
 }
