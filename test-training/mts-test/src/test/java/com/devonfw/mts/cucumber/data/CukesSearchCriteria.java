@@ -1,14 +1,18 @@
-package com.devonfw.mts.api.data;
+package com.devonfw.mts.cucumber.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchCriteria {
+public class CukesSearchCriteria {
 
     public Pageable pageable = new Pageable();
     public String email;
 
-    public SearchCriteria withEmail(String email) {
+    public static CukesSearchCriteria criteria() {
+        return new CukesSearchCriteria();
+    }
+
+    public CukesSearchCriteria withEmail(String email) {
         this.email = email;
         return this;
     }

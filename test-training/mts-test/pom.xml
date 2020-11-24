@@ -41,6 +41,7 @@
         <commons-csv.version>1.1</commons-csv.version>
 
         <spring.version>5.2.7.RELEASE</spring.version>
+        <spring.boot.version>2.3.4.RELEASE</spring.boot.version>
 
         <!-- Static analyze settings -->
         <formatter-maven-plugin.version>2.7.1</formatter-maven-plugin.version>
@@ -144,6 +145,7 @@
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -154,6 +156,25 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.11.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.11.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

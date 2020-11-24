@@ -1,5 +1,6 @@
 package com.devonfw.mts.api.config;
 
+import com.devonfw.mts.shared.TestConfiguration;
 import com.devonfw.mts.api.data.User;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
