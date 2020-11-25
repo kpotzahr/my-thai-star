@@ -31,4 +31,9 @@ public class HomePage {
     public void openLogin() {
         helper.widget(LOGIN_BUTTON_SELECTOR).click();
     }
+
+    public void waitForDisplayedLoginName(String expectedName) {
+        browserAccess.webDriver().findElement(
+                By.xpath("//div//span[@class ='forDesktop'][contains(text(), '" + expectedName + "')]"));
+    }
 }

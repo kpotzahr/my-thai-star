@@ -33,6 +33,7 @@ public class LoginSteps {
     public void iLoginAs(CukesUser user) {
         this.homePage.openLogin();
         this.loginPage.login(user);
+        this.homePage.waitForDisplayedLoginName(user.getUsername());
     }
 
     @When("I login with invalid credentials")

@@ -39,5 +39,10 @@ Feature: Book a table
       | persons   |         0 |
       | persons   |         9 |
       | persons   |        -1 |
-      | persons   |       2.3 |
       | persons   | X         |
+
+  Scenario: Special Error situation
+    When I enter valid booking data
+    And I accept the terms
+    And I change persons to 2.3
+    Then Booking a table is not possible
