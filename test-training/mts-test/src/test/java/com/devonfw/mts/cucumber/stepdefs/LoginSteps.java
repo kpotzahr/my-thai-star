@@ -1,6 +1,5 @@
 package com.devonfw.mts.cucumber.stepdefs;
 
-import com.devonfw.mts.cucumber.api.LoginService;
 import com.devonfw.mts.cucumber.data.CukesUser;
 import com.devonfw.mts.cucumber.pages.HomePage;
 import com.devonfw.mts.cucumber.pages.LoginPage;
@@ -15,9 +14,6 @@ public class LoginSteps {
 
     @Autowired
     private LoginPage loginPage;
-
-
-
 
     @ParameterType(".*")
     public CukesUser user(String username) {
@@ -36,9 +32,5 @@ public class LoginSteps {
         this.homePage.waitForDisplayedLoginName(user.getUsername());
     }
 
-    @When("I login with invalid credentials")
-    public void iLoginWithInvalidCredentials() {
-        loginPage.login(CukesUser.invalidUser());
-    }
 
 }

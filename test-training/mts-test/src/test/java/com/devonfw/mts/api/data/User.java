@@ -1,12 +1,14 @@
 package com.devonfw.mts.api.data;
 
+import com.devonfw.mts.shared.TestDataPoolContent;
+
 public class User {
     private static final String FAKEPASSWORD = "fakepassword";
-    private static final String DEFAULT_USERNAME = "waiter";
-    private static final String DEFAULT_PASSWORD = "waiter";
+
 
     public static User validUser() {
-        return new User(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+        return new User(TestDataPoolContent.instance().getDefaultUsername(),
+                TestDataPoolContent.instance().getDefaultPassword());
     }
 
     private final String username;
@@ -21,7 +23,6 @@ public class User {
     }
 
 
-
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -34,6 +35,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "Usern with username: " + this.username + " and password: " + this.password;
+        return "User with username: " + this.username + " and password: " + this.password;
     }
 }

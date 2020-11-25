@@ -1,18 +1,12 @@
 package com.devonfw.mts.cucumber.data;
 
+import com.devonfw.mts.shared.TestDataPoolContent;
+
 public class CukesUser {
-    private static final String FAKEPASSWORD = "fakepassword";
-    private static final String DEFAULT_USERNAME = "manager";
-    private static final String DEFAULT_PASSWORD = "manager";
-
     public static CukesUser validUser() {
-        return new CukesUser(DEFAULT_USERNAME, DEFAULT_PASSWORD);
+        return new CukesUser(TestDataPoolContent.instance().getDefaultUsername(),
+                TestDataPoolContent.instance().getDefaultPassword());
     }
-
-    public static CukesUser invalidUser() {
-        return new CukesUser("fake", FAKEPASSWORD);
-    }
-
 
     private final String username;
     private final String password;
