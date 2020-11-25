@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class HomePage {
     private static final By LOGIN_BUTTON_SELECTOR = By.name("login");
     private static final By BOOK_TABLE_SELECTOR = By.xpath("//a[@routerlink='/bookTable']");
+
     @Autowired
     private WidgetHelper helper;
 
