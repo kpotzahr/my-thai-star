@@ -19,13 +19,11 @@ public class BookingManagementService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private RestTemplate loggedInRestTemplate;
 
     public boolean hasBookingForEmail(String email) {
         CukesSearchCriteria searchCriteria = CukesSearchCriteria.criteria().withEmail(email);
 
-        ResponseEntity<String> response = loggedInRestTemplate.postForEntity(
+        ResponseEntity<String> response = restTemplate.postForEntity(
                 BOOKING_SEARCH_PATH, searchCriteria, String.class);
 
         return (null != response.getBody()) && response.getBody().contains(email);

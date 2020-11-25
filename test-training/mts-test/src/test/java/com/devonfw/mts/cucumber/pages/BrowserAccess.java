@@ -41,7 +41,6 @@ public class BrowserAccess {
     public void closeBrowser() {
         if (null != webDriver) {
             try {
-                webDriver.quit();
                 webDriver.close();
             } finally {
                 webDriver = null;

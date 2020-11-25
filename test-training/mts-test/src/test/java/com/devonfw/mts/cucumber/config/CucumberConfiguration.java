@@ -23,7 +23,6 @@ import java.util.Collections;
 @ComponentScan("com.devonfw.mts.cucumber.*")
 public class CucumberConfiguration {
 
-
     @Bean
     public RestTemplate restTemplate(
             @Value("${mythaistar.url:http://localhost:8081/}") String appUrl) {
@@ -32,17 +31,13 @@ public class CucumberConfiguration {
                 new DefaultUriBuilderFactory(appUrl));
         // TODO: make nicer
         restTemplate.getMessageConverters().add(5, new MappingJackson2HttpMessageConverter());
-        return restTemplate;
-    }
-
-    @Bean
-    public RestTemplate loggedInRestTemplate(
-            @Value("${mythaistar.url:http://localhost:8081/}") String appUrl) {
-        RestTemplate restTemplate = restTemplate(appUrl);
         ResponseEntity<Void> response = restTemplate.postForEntity(
                 LoginService.API_LOGIN_URL, CukesUser.validUser(), Void.class);
-        String token = response.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-        restTemplate.setInterceptors(Collections.singletonList(new AuthorizationInterceptor(token)));
+        if (null != response.getHeaders().get(HttpHeaders.AUTHORIZATION)
+                && !response.getHeaders().get(HttpHeaders.AUTHORIZATION).isEmpty()) {
+            String token = response.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+            restTemplate.setInterceptors(Collections.singletonList(new AuthorizationInterceptor(token)));
+        }
 
         return restTemplate;
     }
@@ -58,10 +53,7 @@ public class CucumberConfiguration {
         public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
             request.getHeaders().setContentType(MediaType.APPLICATION_JSON);
             request.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-            ClientHttpResponse response = execution.execute(request, body);
-            return response;
+            return execution.execute(request, body);
         }
     }
-
-
 }
