@@ -11,7 +11,7 @@ Feature: Book a table
     And I do not accept the terms
     Then Booking a table is not possible
 
-  Scenario Outline: Book a table for different parties
+  Scenario Outline: Book a table for different parties - check limits and mostly chosen value
     When I enter valid booking information for a table for <number> persons
     And I accept the terms
     And I confirm the booking
@@ -41,7 +41,7 @@ Feature: Book a table
       | persons   |        -1 |
       | persons   | X         |
 
-  Scenario: Special Error situation
+  Scenario: Special Error situation - known bug in application
     When I enter valid booking data
     And I accept the terms
     And I change persons to 2.3
