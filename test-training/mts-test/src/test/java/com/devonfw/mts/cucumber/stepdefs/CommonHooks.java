@@ -3,6 +3,7 @@ package com.devonfw.mts.cucumber.stepdefs;
 import com.devonfw.mts.cucumber.config.CucumberConfiguration;
 import com.devonfw.mts.cucumber.data.ScenarioVariables;
 import com.devonfw.mts.cucumber.pages.BrowserAccess;
+import com.devonfw.mts.cucumber.api.MailMockServer;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -21,9 +22,18 @@ public class CommonHooks {
     @Autowired
     private ScenarioVariables scenarioVariables;
 
+    @Autowired
+    private MailMockServer mailMockServer;
+
     @Before
     public void resetVariables() {
         scenarioVariables.reset();
+    }
+
+    @Before
+    public void mockEmailSuccess() {
+        mailMockServer.reset();
+        mailMockServer.mockEmailSuccess();
     }
 
 
