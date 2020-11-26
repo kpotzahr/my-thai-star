@@ -1,5 +1,7 @@
 package com.devonfw.mts.cucumber.api;
 
+import com.devonfw.mts.cucumber.data.MailInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.FatalStartupException;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -25,6 +29,7 @@ public class MailMockServer {
 
     private WireMockServer wireMockServer;
     private final String mailserviceUrl;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public MailMockServer(@Value("${mailservice.url:http://localhost:8088}") String mailserviceUrl) {
         this.mailserviceUrl = mailserviceUrl;
@@ -47,7 +52,21 @@ public class MailMockServer {
     public void mockEmailSuccess() {
         WireMock.stubFor(post(urlEqualTo("/mail"))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
-                        .withStatus(400)));
+                        .withStatus(200)));
+    }
+
+    public List<MailInfo> getEmails(String email) throws IOException {
+        List<LoggedRequest> requests = wireMockServer.findAll(RequestPatternBuilder.allRequests());
+        List<MailInfo> mails = new ArrayList<>();
+
+        for (LoggedRequest request : requests) {
+            MailInfo info = objectMapper.readValue(request.getBody(), MailInfo.class);
+            if (email.equals(info.getRecipient())) {
+                mails.add(info);
+            }
+        }
+
+        return mails;
     }
 
     public void reset() {
@@ -57,8 +76,6 @@ public class MailMockServer {
     @PreDestroy
     public void shutdown() {
         if (null != wireMockServer) {
-            List<LoggedRequest> requests = wireMockServer.findAll(RequestPatternBuilder.allRequests());
-            LOG.info("Requests:\n" + requests);
             wireMockServer.stop();
         }
     }

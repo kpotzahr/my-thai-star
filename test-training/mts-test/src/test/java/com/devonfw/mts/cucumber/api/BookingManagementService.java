@@ -1,6 +1,7 @@
 package com.devonfw.mts.cucumber.api;
 
 import com.devonfw.mts.cucumber.data.CukesBooking;
+import com.devonfw.mts.cucumber.data.CukesBookingData;
 import com.devonfw.mts.cucumber.data.CukesSearchCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,18 @@ public class BookingManagementService {
     public void createBookingForEmail(String email) {
         CukesBooking booking = CukesBooking.defaultValidBooking();
         booking.getBooking().setEmail(email);
+        createBooking(booking);
+    }
+
+    public void createBooking(CukesBookingData bookingData) {
+        CukesBooking booking = new CukesBooking();
+        booking.setBooking(bookingData);
+        createBooking(booking);
+    }
+
+    private void createBooking(CukesBooking booking) {
         ResponseEntity<CukesBooking> response = restTemplate.postForEntity(
                 BOOKING_CREATE_PATH, booking, CukesBooking.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
 }

@@ -1,16 +1,27 @@
 package com.devonfw.mts.cucumber.stepdefs;
 
+import com.devonfw.mts.cucumber.api.BookingManagementService;
+import com.devonfw.mts.cucumber.api.MailMockServer;
+import com.devonfw.mts.cucumber.data.CukesBookingData;
+import com.devonfw.mts.cucumber.data.MailInfo;
+import com.devonfw.mts.cucumber.data.ScenarioVariables;
 import com.devonfw.mts.cucumber.pages.BookingPage;
 import com.devonfw.mts.cucumber.pages.HomePage;
+import com.devonfw.mts.shared.DateTimeUtils;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class BookingSteps {
@@ -19,6 +30,31 @@ public class BookingSteps {
 
     @Autowired
     private BookingPage bookingPage;
+
+    @Autowired
+    private BookingManagementService bookingManagementService;
+
+    @Autowired
+    private ScenarioVariables scenarioVariables;
+
+    @Autowired
+    private MailMockServer mailMockServer;
+
+    @DataTableType
+    public CukesBookingData bookingData(Map<String, String> entry) {
+        CukesBookingData bookingData = new CukesBookingData();
+        bookingData.setAssistants(Integer.parseInt(entry.get("persons")));
+        bookingData.setEmail(entry.get("email"));
+        bookingData.setName(entry.get("name"));
+
+        String date = entry.get("date");
+        String time = entry.get("time");
+        String bookingDate = DateTimeUtils.convertDateTimeFormat(
+                "dd.MM.yyyy HH:mm", "yyyy-MM-dd'T'MM:mm:ss.SSS'Z'", date + " " + time);
+        bookingData.setBookingDate(bookingDate);
+        return bookingData;
+    }
+
 
     @Given("^the booking section has been opened$")
     public void bookingHasBeenOpened() {
@@ -49,7 +85,9 @@ public class BookingSteps {
     public void enterValidBookingForPersons(int noOfPersons) {
         String dateTomorrow = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         bookingPage.enterTimeAndDate(dateTomorrow + ", 08:00 PM");
-        bookingPage.enterEmail("donald@mytest.de");
+        String email = "donald@mytest.de";
+        bookingPage.enterEmail(email);
+        scenarioVariables.setEmail(email);
         bookingPage.enterName("Donald D. Tester");
         bookingPage.enterGuests(noOfPersons);
     }
@@ -70,6 +108,7 @@ public class BookingSteps {
         switch (attribute) {
             case "email":
                 bookingPage.enterEmail(value);
+                scenarioVariables.setEmail(value);
                 break;
             case "name":
                 bookingPage.enterName(value);
@@ -80,5 +119,17 @@ public class BookingSteps {
             default:
                 throw new IllegalArgumentException("Unknown attribute " + attribute);
         }
+    }
+
+    @When("I book a table with the following booking data:")
+    public void iBookATableWithTheFollowingBookingData(CukesBookingData bookingData) {
+        scenarioVariables.setEmail(bookingData.getEmail());
+        bookingManagementService.createBooking(bookingData);
+    }
+
+    @Then("I get a confirmation email")
+    public void iGetAConfirmationEmail() throws IOException {
+        List<MailInfo> mailInfoList = mailMockServer.getEmails(scenarioVariables.getEmail());
+        assertThat(mailInfoList).hasSize(1);
     }
 }
