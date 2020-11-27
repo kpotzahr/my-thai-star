@@ -466,6 +466,8 @@ public class BookingmanagementImpl extends AbstractComponentFacade implements Bo
       this.mailService.sendMail(booking.getEmail(), "Booking confirmation", hostMailContent.toString());
     } catch (Exception e) {
       LOG.error("Email not sent. {}", e.getMessage());
+      // email confirmation is required, so booking must not be possible if mail cannot be sent
+      throw e;
     }
   }
 
