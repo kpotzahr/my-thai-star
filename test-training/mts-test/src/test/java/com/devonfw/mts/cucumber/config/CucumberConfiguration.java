@@ -12,12 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 @ComponentScan("com.devonfw.mts.cucumber.*")
@@ -29,8 +32,11 @@ public class CucumberConfiguration {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setUriTemplateHandler(
                 new DefaultUriBuilderFactory(appUrl));
-        // TODO: make nicer
-        restTemplate.getMessageConverters().add(5, new MappingJackson2HttpMessageConverter());
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
+        messageConverters.add(converter);
+        restTemplate.setMessageConverters(messageConverters);
         ResponseEntity<Void> response = restTemplate.postForEntity(
                 LoginService.API_LOGIN_URL, CukesUser.validUser(), Void.class);
         if (null != response.getHeaders().get(HttpHeaders.AUTHORIZATION)
