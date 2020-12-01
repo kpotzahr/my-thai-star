@@ -20,14 +20,14 @@ public class BookingManagementSearchApiTest {
 
     @Test
     public void searchByUnknownEmail(RequestSpecification given) {
-        given.body(new SearchCriteria().withEmail("unknownAndInvalid")).
+        given.body(new SearchCriteria().withEmail("unknown@Invalid,com")).
                 when().post(BOOKING_SEARCH_PATH).
                 then().statusCode(204);
     }
 
     @Test
     public void searchByKnownEmail(RequestSpecification given) {
-        String bookingEmail = TestDataPoolContent.instance().getUniqueBookingEmail();
+        String bookingEmail = "valid@email.de";TestDataPoolContent.instance().getUniqueBookingEmail();
         given.body(new SearchCriteria().withEmail(bookingEmail)).
                 when().post(BOOKING_SEARCH_PATH).
                 then().statusCode(200).
