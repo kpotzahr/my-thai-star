@@ -37,4 +37,9 @@ public class BookingManagementCreateApiTest {
         assertThat(requests).hasSize(1);
         assertThat(new String(requests.get(0).getBody())).contains(booking.getBooking().getEmail());
     }
+
+    @Test
+    public void bookingNotSuccessfulForNotWorkingEmail() {
+
+    }
 }

@@ -27,7 +27,7 @@ public class BookingManagementSearchApiTest {
 
     @Test
     public void searchByKnownEmail(RequestSpecification given) {
-        String bookingEmail = "valid@email.de";TestDataPoolContent.instance().getUniqueBookingEmail();
+        String bookingEmail = TestDataPoolContent.instance().getUniqueBookingEmail();
         given.body(new SearchCriteria().withEmail(bookingEmail)).
                 when().post(BOOKING_SEARCH_PATH).
                 then().statusCode(200).
