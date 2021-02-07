@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class BookingManagementCreateApiTest {
     private static final String BOOKING_BASE_PATH = "/api/services/rest/bookingmanagement/v1";
     private static final String BOOKING_CREATE_PATH = BOOKING_BASE_PATH + "/booking/";
+    private static final String BOOKING_SEARCH_PATH = BOOKING_BASE_PATH + "/booking/search";
 
 
     @Test

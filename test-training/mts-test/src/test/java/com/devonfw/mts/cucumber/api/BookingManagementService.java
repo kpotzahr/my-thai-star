@@ -3,11 +3,9 @@ package com.devonfw.mts.cucumber.api;
 import com.devonfw.mts.cucumber.data.CukesBooking;
 import com.devonfw.mts.cucumber.data.CukesBookingData;
 import com.devonfw.mts.cucumber.data.CukesSearchCriteria;
+import io.restassured.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,16 +16,15 @@ public class BookingManagementService {
     private static final String BOOKING_SEARCH_PATH = BOOKING_BASE_PATH + "/booking/search";
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestRequestBuilder requestBuilder;
 
 
     public boolean hasBookingForEmail(String email) {
         CukesSearchCriteria searchCriteria = CukesSearchCriteria.criteria().withEmail(email);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                BOOKING_SEARCH_PATH, searchCriteria, String.class);
-
-        return (null != response.getBody()) && response.getBody().contains(email);
+        Response searchResponse = requestBuilder.request()
+                .body(searchCriteria).post(BOOKING_SEARCH_PATH);
+        return searchResponse.getBody().print().contains(email);
     }
 
     public void createBookingForEmail(String email) {
@@ -43,8 +40,9 @@ public class BookingManagementService {
     }
 
     private void createBooking(CukesBooking booking) {
-        ResponseEntity<CukesBooking> response = restTemplate.postForEntity(
-                BOOKING_CREATE_PATH, booking, CukesBooking.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Response response = requestBuilder.request()
+                .body(booking).post(BOOKING_BASE_PATH + "/booking/");
+        int statusCode = response.then().assertThat().extract().statusCode();
+        assertThat(statusCode).isEqualTo(200);
     }
 }
