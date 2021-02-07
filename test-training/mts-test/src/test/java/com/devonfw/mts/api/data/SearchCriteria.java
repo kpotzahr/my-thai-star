@@ -7,9 +7,15 @@ public class SearchCriteria {
 
     public Pageable pageable = new Pageable();
     public String email;
+    public String bookingToken;
 
     public SearchCriteria withEmail(String email) {
         this.email = email;
+        return this;
+    }
+
+    public SearchCriteria withBookingToken(String token) {
+        this.bookingToken = token;
         return this;
     }
 

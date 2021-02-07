@@ -14,7 +14,7 @@ public class BookingPage {
     private static final By DATE_SELECTOR = By.cssSelector("input[formcontrolname='bookingDate']");
     private static final By NAME_SELECTOR = By.cssSelector("input[formcontrolname='name']");
     private static final By EMAIL_SELECTOR = By.cssSelector("input[formcontrolname='email']");
-    private static final By GUESTS_SELECTOR= By.cssSelector("input[formcontrolname='assistants']");
+    private static final By GUESTS_SELECTOR = By.cssSelector("input[formcontrolname='assistants']");
     private static final By ACCEPT_SELECTOR = By.cssSelector("mat-checkbox[data-name='bookTableTerms']");
     private static final By BOOK_TABLE_SELECTOR = By.name("bookTableSubmit");
     private static final By CONFIRM_SELECTOR = By.name("bookTableConfirm");

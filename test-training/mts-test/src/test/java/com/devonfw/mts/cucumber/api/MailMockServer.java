@@ -20,7 +20,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 @Component
@@ -50,10 +52,20 @@ public class MailMockServer {
     }
 
     public void mockEmailSuccess() {
+        mockEmailHttpResponseStatus(200);
+    }
+
+    public void mockEmailFailure() {
+        mockEmailHttpResponseStatus(400);
+    }
+
+    private void mockEmailHttpResponseStatus(int statusCode) {
         WireMock.stubFor(post(urlEqualTo("/mail"))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
-                        .withStatus(200)));
+                        .withStatus(statusCode)));
+
     }
+
 
     public List<MailInfo> getEmails(String email) throws IOException {
         List<LoggedRequest> requests = wireMockServer.findAll(RequestPatternBuilder.allRequests());

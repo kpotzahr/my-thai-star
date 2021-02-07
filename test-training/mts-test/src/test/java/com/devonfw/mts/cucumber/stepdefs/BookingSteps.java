@@ -2,10 +2,12 @@ package com.devonfw.mts.cucumber.stepdefs;
 
 import com.devonfw.mts.cucumber.api.BookingManagementService;
 import com.devonfw.mts.cucumber.api.MailMockServer;
+import com.devonfw.mts.cucumber.data.CreateBookingResponse;
 import com.devonfw.mts.cucumber.data.CukesBookingData;
 import com.devonfw.mts.cucumber.data.MailInfo;
 import com.devonfw.mts.cucumber.data.ScenarioVariables;
 import com.devonfw.mts.cucumber.pages.BookingPage;
+import com.devonfw.mts.cucumber.pages.ConfirmationPage;
 import com.devonfw.mts.cucumber.pages.HomePage;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
@@ -33,6 +35,9 @@ public class BookingSteps {
     private BookingPage bookingPage;
 
     @Autowired
+    private ConfirmationPage confirmationPage;
+
+    @Autowired
     private BookingManagementService bookingManagementService;
 
     @Autowired
@@ -40,6 +45,8 @@ public class BookingSteps {
 
     @Autowired
     private MailMockServer mailMockServer;
+
+    private CreateBookingResponse bookingResponse;
 
     @DataTableType
     public CukesBookingData bookingData(Map<String, String> entry) {
@@ -50,6 +57,17 @@ public class BookingSteps {
 
         String date = entry.get("date");
         String time = entry.get("time");
+        switch (date) {
+            case "<today>":
+                date = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now());
+                break;
+            case "<tomorrow>":
+                date = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now().plusDays(1));
+                break;
+            default:
+                break;
+        }
+
         LocalDateTime bookingDate = LocalDateTime.parse(date + " " + time,
                 DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
                         .withZone(ZoneId.systemDefault()));
@@ -128,12 +146,56 @@ public class BookingSteps {
     public void iBookATableWithTheFollowingBookingData(CukesBookingData bookingData) {
         scenarioVariables.setEmail(bookingData.getEmail());
         scenarioVariables.setBookingData(bookingData);
-        bookingManagementService.createBooking(bookingData);
+        bookingResponse = bookingManagementService.createBooking(bookingData);
     }
 
     @Then("I get a confirmation email")
     public void iGetAConfirmationEmail() throws IOException {
         List<MailInfo> mailInfoList = mailMockServer.getEmails(scenarioVariables.getEmail());
         assertThat(mailInfoList).hasSize(1);
+    }
+
+    @When("I enter and accept the following booking data:")
+    public void iEnterAndAcceptTheFollowingBookingData(CukesBookingData bookingData) {
+        bookingPage.enterTimeAndDate(bookingData.getBookingDate());
+        bookingPage.enterEmail(bookingData.getEmail());
+        scenarioVariables.setEmail(bookingData.getEmail());
+        bookingPage.enterName(bookingData.getName());
+        bookingPage.enterGuests(bookingData.getAssistants());
+        bookingPage.acceptTerms(true);
+        scenarioVariables.setBookingData(bookingData);
+        bookingPage.bookTable();
+    }
+
+    @Then("I see all the entered details in the confirmation dialog")
+    public void iSeeAllTheEnteredDetailsInTheConfirmationDialog() {
+        CukesBookingData bookingData = scenarioVariables.getBookingData();
+        assertThat(confirmationPage.getName()).isEqualTo(bookingData.getName());
+        assertThat(confirmationPage.getEmail()).isEqualTo(bookingData.getEmail());
+        assertThat(confirmationPage.hasNumberOfGuests(bookingData.getAssistants())).isTrue();
+        assertThat(confirmationPage.hasBookingDateTime(bookingData.getBookingDate())).isTrue();
+    }
+
+    @Then("I all the entered details are saved")
+    public void iAllTheEnteredDetailsAreAccepted() {
+        assertThat(bookingResponse.getData()).isEqualToComparingOnlyGivenFields(scenarioVariables.getBookingData(),
+                "name", "email", "bookingDate", "assistants");
+    }
+
+    @Then("The confirmation email contains the booking token")
+    public void theConfirmationEmailContainsABookingId() throws IOException {
+        List<MailInfo> mailInfoList = mailMockServer.getEmails(scenarioVariables.getEmail());
+        assertThat(mailInfoList.get(0).getText()).contains(bookingResponse.getData().getBookingToken());
+
+    }
+
+    @Given("The mail service has an internal problem")
+    public void theMailServiceHasAnInternalProblem() {
+        mailMockServer.mockEmailFailure();
+    }
+
+    @Then("The booking is not accepted")
+    public void theBookingIsNotAccepted() {
+        assertThat(bookingResponse.getHttpStatus()).isEqualTo(500);
     }
 }

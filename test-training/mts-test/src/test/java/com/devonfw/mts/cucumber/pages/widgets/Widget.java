@@ -11,7 +11,7 @@ public class Widget {
     private final WebDriver searchContext;
     private final By selector;
 
-    public Widget(By selector, WebDriver searchContext)  {
+    public Widget(By selector, WebDriver searchContext) {
         this.searchContext = searchContext;
         this.selector = selector;
     }
