@@ -4,12 +4,17 @@ import org.openqa.selenium.By;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class BookingPage {
     private static final By DATE_SELECTOR = By.cssSelector("input[formcontrolname='bookingDate']");
     private static final By NAME_SELECTOR = By.cssSelector("input[formcontrolname='name']");
     private static final By EMAIL_SELECTOR = By.cssSelector("input[formcontrolname='email']");
-    private static final By GUESTS_SELECTOR= By.cssSelector("input[formcontrolname='assistants']");
+    private static final By GUESTS_SELECTOR = By.cssSelector("input[formcontrolname='assistants']");
     private static final By ACCEPT_SELECTOR = By.cssSelector("mat-checkbox[data-name='bookTableTerms']");
     private static final By BOOK_TABLE_SELECTOR = By.name("bookTableSubmit");
     private static final By CONFIRM_SELECTOR = By.name("bookTableConfirm");
@@ -32,6 +37,12 @@ public class BookingPage {
         helper.inputfield(DATE_SELECTOR).enter(dateTime);
     }
 
+    public void enterTimeAndDate(Instant dateTime) {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTime, ZoneId.systemDefault());
+        enterTimeAndDate(DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm a")
+                .format(localDateTime));
+    }
+
     public void enterEmail(String email) {
         helper.inputfield(EMAIL_SELECTOR).enter(email);
     }
@@ -49,8 +60,12 @@ public class BookingPage {
     }
 
     public void bookTableAndConfirm() {
-        helper.button(BOOK_TABLE_SELECTOR).click();
+        bookTable();
         helper.button(CONFIRM_SELECTOR).click();
+    }
+
+    public void bookTable() {
+        helper.button(BOOK_TABLE_SELECTOR).click();
     }
 
     public boolean isSuccessMessageShown() {

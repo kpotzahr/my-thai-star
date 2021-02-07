@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -49,9 +51,11 @@ public class BookingSteps {
 
         String date = entry.get("date");
         String time = entry.get("time");
-        String bookingDate = DateTimeUtils.convertDateTimeFormat(
-                "dd.MM.yyyy HH:mm", "yyyy-MM-dd'T'MM:mm:ss.SSS'Z'", date + " " + time);
-        bookingData.setBookingDate(bookingDate);
+        LocalDateTime bookingDate = LocalDateTime.parse(date + " " + time,
+                DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                        .withZone(ZoneId.systemDefault()));
+
+        bookingData.setBookingDate(bookingDate.atZone(ZoneId.systemDefault()).toInstant());
         return bookingData;
     }
 
@@ -124,6 +128,7 @@ public class BookingSteps {
     @When("I book a table with the following booking data:")
     public void iBookATableWithTheFollowingBookingData(CukesBookingData bookingData) {
         scenarioVariables.setEmail(bookingData.getEmail());
+        scenarioVariables.setBookingData(bookingData);
         bookingManagementService.createBooking(bookingData);
     }
 

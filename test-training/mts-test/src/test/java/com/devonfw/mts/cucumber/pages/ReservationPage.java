@@ -7,8 +7,9 @@ import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +25,6 @@ public class ReservationPage {
     private static final By COLUMN_EMAIL_SEARCH = By.className("cdk-column-email");
     private static final By COLUMN_BOOKING_TOKEN_SEARCH = By.className("cdk-column-bookingToken");
     private static final String DATE_FORMAT_UI = "MMM d, yyyy h:mm a";
-    private static final String DATE_FORMAT_INTERNAL = "MM/dd/yyyy hh:mm a";
 
     @Autowired
     private WidgetHelper helper;
@@ -57,7 +57,7 @@ public class ReservationPage {
         List<WebElement> reservationsLines = browserAccess.webDriver().findElements(TABLE_ROWS_SELECTOR);
 
         for (WebElement reservationLine : reservationsLines) {
-            String date = reformatDateTime(reservationLine.findElement(COLUMN_BOOKING_DATE_SEARCH).getText());
+            Instant date = parseDateTime(reservationLine.findElement(COLUMN_BOOKING_DATE_SEARCH).getText());
             String email = reservationLine.findElement(COLUMN_EMAIL_SEARCH).getText();
             String id = reservationLine.findElement(COLUMN_BOOKING_TOKEN_SEARCH).getText();
             reservations.add(new CukesBookingData(date, email, id));
@@ -65,12 +65,12 @@ public class ReservationPage {
         return reservations;
     }
 
-    private String reformatDateTime(String dateFromTable) {
-        DateTimeFormatter readingFormat = DateTimeFormatter.ofPattern(DATE_FORMAT_UI).withLocale(Locale.US);
-        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern(DATE_FORMAT_INTERNAL);
+    private Instant parseDateTime(String dateFromTable) {
+        DateTimeFormatter readingFormat = DateTimeFormatter.ofPattern(DATE_FORMAT_UI)
+                .withLocale(Locale.getDefault())
+                .withZone(ZoneId.systemDefault());
 
-        TemporalAccessor date = readingFormat.parse(dateFromTable);
-        return outputFormat.format(date);
+        return readingFormat.parse(dateFromTable, Instant::from);
     }
 
 }

@@ -1,32 +1,31 @@
 package com.devonfw.mts.cucumber.data;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 
 public class CukesBookingData {
     public static final String DEFAULT_NAME = "Someone";
     public static final String DEFAULT_EMAIL = "email@test.de";
-    public static final String DEFAULT_BOOKING_DATE = LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "T18:00:12.111Z";
     public static final int DEFAULT_GUESTS = 2;
 
     public static CukesBookingData defaultBookingData() {
         CukesBookingData bookingData = new CukesBookingData();
         bookingData.setAssistants(DEFAULT_GUESTS);
         bookingData.setName(DEFAULT_NAME);
-        bookingData.setBookingDate(DEFAULT_BOOKING_DATE);
+        bookingData.setBookingDate(Instant.now().plusSeconds(7 * 60 * 60 * 24));
         bookingData.setEmail(DEFAULT_EMAIL);
         return bookingData;
     }
 
     private String id;
     private String name;
-    private String bookingDate;
+    private Instant bookingDate;
     private String email;
     private Integer assistants;
 
-    public CukesBookingData() {}
+    public CukesBookingData() {
+    }
 
-    public CukesBookingData(String bookingDate, String email, String id) {
+    public CukesBookingData(Instant bookingDate, String email, String id) {
         this.bookingDate = bookingDate;
         this.email = email;
         this.id = id;
@@ -49,11 +48,11 @@ public class CukesBookingData {
         this.name = name;
     }
 
-    public String getBookingDate() {
+    public Instant getBookingDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(String bookingDate) {
+    public void setBookingDate(Instant bookingDate) {
         this.bookingDate = bookingDate;
     }
 

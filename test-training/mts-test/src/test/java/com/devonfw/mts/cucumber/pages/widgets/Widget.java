@@ -42,4 +42,8 @@ public class Widget {
     public WebElement getWebElement() {
         return searchContext.findElement(selector);
     }
+
+    public String getText() {
+        return getWebElement().getText();
+    }
 }

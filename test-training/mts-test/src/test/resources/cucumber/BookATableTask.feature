@@ -8,7 +8,7 @@ Feature: Book a table more detailed checks
     And the booking section has been opened
     When I enter and accept the following booking data:
       | name  | email                 | persons | date       | time  |
-      | Mr. X | mr.x@some-company-com | 2       | <tomorrow> | 20:00 |
+      | Mr. X | mr.x@some-company.com | 2       | <tomorrow> | 20:00 |
     Then I see all the entered details in the confirmation dialog
 
   @api
@@ -16,7 +16,7 @@ Feature: Book a table more detailed checks
     When I book a table with the following booking data:
       | name  | email                 | persons | date    | time  |
       | Mr. X | mr.x@some-company.com | 2       | <today> | 23:00 |
-    Then I all the entered details are accepted
+    Then I all the entered details are saved
 
   @api
   Scenario: Check email confirmation
@@ -24,7 +24,7 @@ Feature: Book a table more detailed checks
       | name  | email                 | persons | date       | time  |
       | Mr. X | mr.x@some-company.com | 2       | 01.01.2022 | 20:00 |
     Then I get a confirmation email
-    And The confirmation email contains a booking id
+    And The confirmation email contains the booking token
 
   @api
   Scenario: Check that a problem with the mail server prevents the booking
