@@ -27,7 +27,7 @@ public class BrowserAccess {
         if (null != webDriver) {
             return;
         }
-        System.setProperty(CHROME_DRIVER_PROPERTY, TestConfiguration.getChromedriverPath());
+        //System.setProperty(CHROME_DRIVER_PROPERTY, TestConfiguration.getChromedriverPath());
         webDriver = new ChromeDriver();
         webDriver.manage().window().maximize();
         webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
