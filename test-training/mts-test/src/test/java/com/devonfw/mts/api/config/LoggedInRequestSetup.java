@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import org.springframework.http.HttpHeaders;
 
 public class LoggedInRequestSetup implements ParameterResolver {
-    private static final String API_LOGIN_URL = "/api/login";
+    private static final String API_LOGIN_URL = TestConfiguration.getApiPath() + "/login";
 
     private static String token = null;
 

@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class RestRequestBuilder {
-    private static final String API_LOGIN_URL = "/api/login";
+    private static final String API_LOGIN_URL = TestConfiguration.getApiPath() + "/login";
 
     private String accessToken = null;
 

@@ -24,6 +24,18 @@ public class TestConfiguration {
         }
     }
 
+    public static String getApiPath() {
+        try (InputStream input = new FileInputStream(ResourceUtils.getFile("classpath:application.properties"))) {
+            Properties prop = new Properties();
+            prop.load(input);
+            return prop.getProperty("mythaistar.api.path");
+        } catch (IOException ex) {
+            LOG.error("Error when accessing application properties; default is used", ex);
+            return "/api";
+        }
+    }
+
+
     public static String getChromedriverPath() {
         return "lib/chromedriver.exe";
     }

@@ -3,6 +3,7 @@ package com.devonfw.mts.api;
 
 import com.devonfw.mts.api.config.RestassuredConnectionSetup;
 import com.devonfw.mts.api.data.User;
+import com.devonfw.mts.shared.TestConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +16,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 
 @ExtendWith(RestassuredConnectionSetup.class)
 public class LoginRestAssuredApiTest {
-    private static final String API_LOGIN_URL = "/api/login";
+    private static final String API_LOGIN_URL = TestConfiguration.getApiPath() + "/login";
 
     @Test
     public void loginSuccessful() {

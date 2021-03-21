@@ -14,7 +14,7 @@ import com.devonfw.mts.selenium.pages.LoginPage;
 public final class LoginTest {
 	
 	/** Public constants */
-	public static final String LANDING_PAGE = "http://localhost:8081/restaurant";
+	public static final String LANDING_PAGE = "http://localhost:8081/";
 
 	/** Private constants */
 	private static final String SUCCESSFUL_LOGIN = "Login successful\nOK";
@@ -30,7 +30,7 @@ public final class LoginTest {
 	@Test
 	public void testSuccessfulLoginWithUserWaiterBadExample() {
 		WebDriver driver = new ChromeDriver();
-		driver.get("http://localhost:8081/restaurant");
+		driver.get("http://localhost:8081/");
 		
 		driver.findElement(By.name("login")).click();
 		driver.findElement(By.name("username")).sendKeys("waiter");
