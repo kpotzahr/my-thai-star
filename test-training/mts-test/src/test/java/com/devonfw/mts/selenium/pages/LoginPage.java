@@ -1,29 +1,16 @@
 package com.devonfw.mts.selenium.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class LoginPage {
-	
-	/** The WebDrivers */
-	private static WebDriver sDriver = new ChromeDriver();	
-	private static WebDriverWait sDriverWait = new WebDriverWait(sDriver, 5);
+public final class LoginPage extends Page {
 
 	/** Private page related static constants */
 	private static final By sLoginButton = By.name("login");
 	private static final By sUsernameField = By.name("username");
 	private static final By sPasswordField = By.name("password");
 	private static final By sSubmitButton = By.name("submitLogin");
-	private static final By errorPanel = By.cssSelector("simple-snack-bar");
-	
-	/** Public page access */
-	
-	public static void navigateTo(String url) {
-		sDriver.get(url);
-	}
+	private static final By sCancelButton = By.name("cancelLogin");	
 	
 	/**
 	 * Clicks the login button, enters username, password and clicks login. 
@@ -40,13 +27,22 @@ public class LoginPage {
 		submitLoginButton().click();
 	}
 	
-	public static String getLoginMessage() {
-		return sDriverWait.until(f -> f.findElement(errorPanel)).getText();
+	public static void cancelLogin(String user, String password) {
+		loginButton().click();
+		
+		fillUsername(user);
+		fillPassword(password);
+		
+		cancelLoginButton().click();
 	}
 	
 	/** Private page access */
 	private static WebElement loginButton() {
 		return sDriver.findElement(sLoginButton);
+	}
+	
+	private static WebElement cancelLoginButton() {
+		return sDriver.findElement(sCancelButton);
 	}
 	
 	private static void fillUsername(String name) {
